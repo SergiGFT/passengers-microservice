@@ -1,16 +1,16 @@
 package com.gft.workshop.passengers.model;
 
-
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.UUID;
 
-@Entity
+@Table("passenger")
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,14 +18,13 @@ import java.util.List;
 public class Passenger {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer passengerId;
+    private UUID passengerId;
     private String name;
     private String email;
     private String phone;
     private String preferredPaymentMethod;
     private ZonedDateTime registeredAt;
 
-    @OneToMany(mappedBy="passenger", cascade = CascadeType.ALL)
-    private List<Trip> trips;
+  /*  @OneToMany(mappedBy="passenger", cascade = CascadeType.ALL)
+    private List<Trip> trips;*/
 }

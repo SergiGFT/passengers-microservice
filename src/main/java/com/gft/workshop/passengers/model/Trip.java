@@ -1,14 +1,16 @@
 package com.gft.workshop.passengers.model;
 
-import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.ZonedDateTime;
 
-@Entity
+@Table("trip")
 @Data
 @Builder
 @AllArgsConstructor
@@ -16,7 +18,6 @@ import java.time.ZonedDateTime;
 public class Trip {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer tripId;
     private String routeId;
     private String vehicleId;
@@ -26,8 +27,8 @@ public class Trip {
     private String endStop;
     private double fare;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "passengerId")
-    private Passenger passenger;
+    private Passenger passenger;*/
 
 }

@@ -23,8 +23,7 @@ public class PassengerController {
     public Mono<ResponseEntity<Passenger>> createPassenger(@RequestBody Passenger passenger) {
 
         return passengerService.createPassenger(passenger)
-                .map(PassengerController::buildOkResponse)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .map(PassengerController::buildOkResponse);
     }
 
 

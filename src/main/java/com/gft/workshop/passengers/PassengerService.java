@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Service
 public class PassengerService {
 
@@ -17,6 +19,7 @@ public class PassengerService {
     }
 
     public Mono<Passenger> createPassenger(Passenger passenger) {
+        passenger.setPassengerId(UUID.randomUUID());
         return passengerRepository.save(passenger);
     }
 }
