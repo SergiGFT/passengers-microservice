@@ -1,11 +1,9 @@
 package com.gft.workshop.passengers.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
+import reactor.util.annotation.Nullable;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -18,11 +16,12 @@ import java.util.UUID;
 public class Passenger {
 
     @Id
-    private UUID passengerId;
+    private String passengerId;
     private String name;
     private String email;
     private String phone;
     private String preferredPaymentMethod;
+    @Nullable
     private ZonedDateTime registeredAt;
 
   /*  @OneToMany(mappedBy="passenger", cascade = CascadeType.ALL)
