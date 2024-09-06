@@ -26,9 +26,6 @@ public class Trip {
     private String startStop;
     private String endStop;
     private double fare;
-
-    /*@ManyToOne
-    @JoinColumn(name = "passengerId")
-    private Passenger passenger;*/
+    private Passenger passenger;
 
 }
