@@ -1,7 +1,10 @@
-package com.gft.workshop.passengers;
+package com.gft.workshop.passengers.application.service;
 
-import com.gft.workshop.passengers.model.Passenger;
-import com.gft.workshop.passengers.model.Trip;
+import com.gft.workshop.passengers.domain.model.Passenger;
+import com.gft.workshop.passengers.domain.model.Trip;
+import com.gft.workshop.passengers.domain.repository.PassengerRepository;
+import com.gft.workshop.passengers.infraestructure.repository.CustomPassengerRepository;
+import com.gft.workshop.passengers.infraestructure.repository.CustomTripRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -17,7 +20,7 @@ public class PassengerService {
 
     private final CustomPassengerRepository customPassengerRepository;
 
-    private final TripRepository tripRepository;
+    private final CustomTripRepository customTripRepository;
 
     public Mono<Passenger> createPassenger(Passenger passenger) {
         passenger.setRegisteredAt(ZonedDateTime.now());
@@ -29,7 +32,7 @@ public class PassengerService {
         return passengerRepository.findById(passengerId)
                         .flatMap(passenger -> {
                             trip.setPassenger(passenger);
-                            return tripRepository.insertTripToPassenger(trip);
+                            return customTripRepository.insertTripToPassenger(trip);
                         });
 
     }

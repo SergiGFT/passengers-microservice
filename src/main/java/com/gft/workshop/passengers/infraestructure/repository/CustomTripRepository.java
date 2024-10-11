@@ -1,17 +1,16 @@
-package com.gft.workshop.passengers;
+package com.gft.workshop.passengers.infraestructure.repository;
 
-import com.gft.workshop.passengers.model.Passenger;
-import com.gft.workshop.passengers.model.Trip;
+import com.gft.workshop.passengers.domain.model.Trip;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
 @Repository
-public class TripRepository {
+public class CustomTripRepository {
 
     final R2dbcEntityTemplate template;
 
-    public TripRepository(R2dbcEntityTemplate template) {
+    public CustomTripRepository(R2dbcEntityTemplate template) {
         this.template = template;
     }
 

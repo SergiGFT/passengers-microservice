@@ -1,6 +1,6 @@
-package com.gft.workshop.passengers;
+package com.gft.workshop.passengers.infraestructure.repository;
 
-import com.gft.workshop.passengers.model.Passenger;
+import com.gft.workshop.passengers.domain.model.Passenger;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;

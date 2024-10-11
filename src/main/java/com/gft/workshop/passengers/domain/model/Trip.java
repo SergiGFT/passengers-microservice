@@ -1,16 +1,18 @@
-package com.gft.workshop.passengers.model;
+package com.gft.workshop.passengers.domain.model;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jmolecules.ddd.annotation.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.ZonedDateTime;
 
 @Table("trip")
+@Entity
 @Data
 @Builder
 @AllArgsConstructor
