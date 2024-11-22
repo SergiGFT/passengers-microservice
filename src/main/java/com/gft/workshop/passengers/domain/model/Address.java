@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jmolecules.ddd.annotation.ValueObject;
-import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Table("adress")
+@Document(collection = "adress")
 @ValueObject
 @Data
 @AllArgsConstructor

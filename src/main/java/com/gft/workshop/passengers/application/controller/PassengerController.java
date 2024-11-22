@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @RestController
 public class PassengerController {
 
@@ -26,40 +29,69 @@ public class PassengerController {
 
         return passengerService.createPassenger(passenger)
                 .map(pass -> new ResponseEntity<>(pass, HttpStatus.CREATED))
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+                .onErrorReturn(ResponseEntity.badRequest().build())
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/passenger/{id}")
     public Mono<ResponseEntity<Passenger>> findPassengerById(@PathVariable String id) {
 
         return passengerService.findPassenger(id)
-                .map(PassengerController::buildOkResponse);
+                .map(pass -> new ResponseEntity<>(pass, HttpStatus.OK))
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/passenger")
-    public Flux<ResponseEntity<Passenger>> findAllPassengers() {
-        return passengerService.findAllPassengers().map(PassengerController::buildOkResponse);
+    public Mono<ResponseEntity<Flux<Passenger>>> findAllPassengers() {
+        Flux<Passenger> passengers = passengerService.findAllPassengers();
+
+        return passengers.hasElements()
+                .flatMap(hasElements ->
+                    hasElements ? Mono.just(ResponseEntity.ok(passengers)) :
+                            Mono.just(ResponseEntity.notFound().build())
+                );
     }
 
+    @PostMapping("/trip/passenger/{id}")
+    public Mono<ResponseEntity<Trip>> createTripForPassenger(@PathVariable String id, @RequestBody Trip trip) {
 
-    @PostMapping("/trips/passenger/{id}")
-    public Mono<ResponseEntity<Trip>> createTripForPassenger(@PathVariable String passengerId, @RequestBody Trip trip) {
+        return passengerService.addTripToPassenger(id, trip)
+                .map(pass -> new ResponseEntity<>(pass, HttpStatus.CREATED))
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.BAD_REQUEST))
+                .onErrorReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    }
 
-        return passengerService.createTrip(passengerId, trip)
-                .map(PassengerController::buildOkResponse)
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    @GetMapping("/trip/passenger/{id}")
+    public Mono<ResponseEntity<Flux<Trip>>> getTripsByPassenger(@PathVariable String id) {
+        Flux<Trip> trips = passengerService.getTripsByPassengerId(id);
+
+        return trips.hasElements()
+                .flatMap(hasElements ->
+                    hasElements ? Mono.just(ResponseEntity.ok(trips)) :
+                        Mono.just(ResponseEntity.notFound().build())
+                );
+    }
+
+    @PutMapping("trip/{tripId}")
+    public Mono<ResponseEntity<String>> markTripAsCompleted(@PathVariable String tripId) {
+
+        return passengerService.markTripAsCompleted(tripId)
+                .map(nTrips->
+                        nTrips.equals(0L) ?
+                                new ResponseEntity<>("no trips found", HttpStatus.NOT_FOUND) :
+                                new ResponseEntity<>(nTrips + " trips updated", HttpStatus.OK));
 
     }
 
+    @GetMapping("passenger/{startDate}/{endDate}")
+    public Mono<ResponseEntity<Flux<Passenger>>> getPassengersWithTripsInDateRange(@PathVariable LocalDate startDate,
+                                                                                   @PathVariable LocalDate endDate) {
+        Flux<Passenger> passengers = passengerService.findPassengersWithTripsInDateRange(startDate, endDate);
 
-    private static ResponseEntity<Passenger> buildOkResponse(Passenger drivingRoute) {
-        return new ResponseEntity<>(drivingRoute, HttpStatusCode.valueOf(200));
-    }
-
-
-
-    private static ResponseEntity<Trip> buildOkResponse(Trip trip) {
-        return new ResponseEntity<>(trip, HttpStatusCode.valueOf(200));
+        return passengers.hasElements()
+                .flatMap(hasElements ->
+                        hasElements ? Mono.just(ResponseEntity.ok(passengers)) :
+                                Mono.just(ResponseEntity.notFound().build()));
     }
 
 }

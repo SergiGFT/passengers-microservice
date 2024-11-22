@@ -7,11 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jmolecules.ddd.annotation.Entity;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
-@Table("trip")
+@Document(collection = "trips")
 @Entity
 @Data
 @Builder
@@ -20,14 +20,20 @@ import java.time.ZonedDateTime;
 public class Trip {
 
     @Id
-    private Integer tripId;
+    private String tripId;
     private String routeId;
-    private String vehicleId;
-    private ZonedDateTime startTime;
-    private ZonedDateTime endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private String startStop;
     private String endStop;
     private double fare;
-    private Passenger passenger;
+    private String passengerId;
+    private TripStatus status = TripStatus.IN_PROGRESS;
+
+    public enum TripStatus {
+        IN_PROGRESS,
+        COMPLETED,
+        CANCELLED
+    }
 
 }

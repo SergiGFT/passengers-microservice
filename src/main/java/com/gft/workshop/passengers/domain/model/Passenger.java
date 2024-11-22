@@ -3,16 +3,18 @@ package com.gft.workshop.passengers.domain.model;
 import lombok.*;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
-@Table("passenger")
+@Document(collection = "passengers")
 @AggregateRoot
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Passenger {
 
     @Id
@@ -24,9 +26,9 @@ public class Passenger {
     private String phone;
     private Address address;
     private String preferredPaymentMethod;
-    private ZonedDateTime registeredAt;
-    private String passengerStatus;
+    private Date registeredAt;
 
+    @Transient
     private List<Trip> tripsHistorical;
 
 }

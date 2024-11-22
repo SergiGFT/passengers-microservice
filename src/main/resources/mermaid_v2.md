@@ -4,7 +4,7 @@ title: Route
 ---
 classDiagram
 
-    class RouteManagement {
+class RouteManagement {
 <<Bounded Context>>
 +RouteService
 +RouteRepository
@@ -155,6 +155,7 @@ DateTime fechaHoraInicio
 DateTime fechaHoraFin
 double fare #todo
 EstadoViajeEnum estadoViaje
+String passengerId
 }
  
 PassengerManagement--|>Passenger
