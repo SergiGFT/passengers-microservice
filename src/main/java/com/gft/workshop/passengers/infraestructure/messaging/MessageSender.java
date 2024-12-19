@@ -1,4 +1,3 @@
 package com.gft.workshop.passengers.infraestructure.messaging;
 
-public class MessageSender {
-}
+public class MessageSender {}

@@ -1,97 +1,73 @@
 package com.gft.workshop.passengers.application.controller;
 
+import static org.springframework.http.HttpMethod.*;
+
+import com.gft.workshop.passengers.application.dto.PassengerDTO;
 import com.gft.workshop.passengers.application.service.PassengerService;
 import com.gft.workshop.passengers.domain.model.Passenger;
-import com.gft.workshop.passengers.domain.model.Trip;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import java.time.LocalDate;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @RestController
+@RequestMapping("/passenger")
+@RequiredArgsConstructor
+@Slf4j
 public class PassengerController {
 
-    private final PassengerService passengerService;
+  private static final String PATH = "/passenger";
 
-    @Autowired
-    public PassengerController(PassengerService passengerService) {
-        this.passengerService = passengerService;
-    }
+  private final PassengerService passengerService;
 
-    @PostMapping("/passenger")
-    public Mono<ResponseEntity<Passenger>> createPassenger(@RequestBody Passenger passenger) {
+  @PostMapping
+  public Mono<Passenger> createPassenger(@RequestBody PassengerDTO passenger) {
 
-        return passengerService.createPassenger(passenger)
-                .map(pass -> new ResponseEntity<>(pass, HttpStatus.CREATED))
-                .onErrorReturn(ResponseEntity.badRequest().build())
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
+    return passengerService
+        .createPassenger(passenger)
+        .doOnSuccess(e -> ControllerLogs.logOnSuccess(log, POST, PATH))
+        .doOnCancel(() -> ControllerLogs.logOnCancel(log, POST, PATH))
+        .doOnError(errorEx -> ControllerLogs.logOnError(log, POST, PATH, errorEx));
+  }
 
-    @GetMapping("/passenger/{id}")
-    public Mono<ResponseEntity<Passenger>> findPassengerById(@PathVariable String id) {
+  @GetMapping("/{id}")
+  public Mono<Passenger> findPassengerById(@PathVariable String id) {
+    var path = PATH + id;
+    return passengerService
+        .findPassenger(id)
+        .doOnSuccess(e -> ControllerLogs.logOnSuccess(log, GET, path))
+        .doOnCancel(() -> ControllerLogs.logOnCancel(log, GET, path))
+        .doOnError(errorEx -> ControllerLogs.logOnError(log, GET, path, errorEx));
+  }
 
-        return passengerService.findPassenger(id)
-                .map(pass -> new ResponseEntity<>(pass, HttpStatus.OK))
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
+  @DeleteMapping("/{id}")
+  public Mono<Void> deletePassengerById(@PathVariable String id) {
+    var path = PATH + id;
+    return passengerService
+        .deletePassenger(id)
+        .doOnSuccess(e -> ControllerLogs.logOnSuccess(log, DELETE, path))
+        .doOnCancel(() -> ControllerLogs.logOnCancel(log, DELETE, path))
+        .doOnError(errorEx -> ControllerLogs.logOnError(log, DELETE, path, errorEx));
+  }
 
-    @GetMapping("/passenger")
-    public Mono<ResponseEntity<Flux<Passenger>>> findAllPassengers() {
-        Flux<Passenger> passengers = passengerService.findAllPassengers();
+  @GetMapping
+  public Flux<Passenger> findAllPassengers() {
+    return passengerService
+        .findAllPassengers()
+        .doOnComplete(() -> ControllerLogs.logOnSuccess(log, GET, PATH))
+        .doOnCancel(() -> ControllerLogs.logOnCancel(log, GET, PATH))
+        .doOnError(errorEx -> ControllerLogs.logOnError(log, GET, PATH, errorEx));
+  }
 
-        return passengers.hasElements()
-                .flatMap(hasElements ->
-                    hasElements ? Mono.just(ResponseEntity.ok(passengers)) :
-                            Mono.just(ResponseEntity.notFound().build())
-                );
-    }
-
-    @PostMapping("/trip/passenger/{id}")
-    public Mono<ResponseEntity<Trip>> createTripForPassenger(@PathVariable String id, @RequestBody Trip trip) {
-
-        return passengerService.addTripToPassenger(id, trip)
-                .map(pass -> new ResponseEntity<>(pass, HttpStatus.CREATED))
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.BAD_REQUEST))
-                .onErrorReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
-    }
-
-    @GetMapping("/trip/passenger/{id}")
-    public Mono<ResponseEntity<Flux<Trip>>> getTripsByPassenger(@PathVariable String id) {
-        Flux<Trip> trips = passengerService.getTripsByPassengerId(id);
-
-        return trips.hasElements()
-                .flatMap(hasElements ->
-                    hasElements ? Mono.just(ResponseEntity.ok(trips)) :
-                        Mono.just(ResponseEntity.notFound().build())
-                );
-    }
-
-    @PutMapping("trip/{tripId}")
-    public Mono<ResponseEntity<String>> markTripAsCompleted(@PathVariable String tripId) {
-
-        return passengerService.markTripAsCompleted(tripId)
-                .map(nTrips->
-                        nTrips.equals(0L) ?
-                                new ResponseEntity<>("no trips found", HttpStatus.NOT_FOUND) :
-                                new ResponseEntity<>(nTrips + " trips updated", HttpStatus.OK));
-
-    }
-
-    @GetMapping("passenger/{startDate}/{endDate}")
-    public Mono<ResponseEntity<Flux<Passenger>>> getPassengersWithTripsInDateRange(@PathVariable LocalDate startDate,
-                                                                                   @PathVariable LocalDate endDate) {
-        Flux<Passenger> passengers = passengerService.findPassengersWithTripsInDateRange(startDate, endDate);
-
-        return passengers.hasElements()
-                .flatMap(hasElements ->
-                        hasElements ? Mono.just(ResponseEntity.ok(passengers)) :
-                                Mono.just(ResponseEntity.notFound().build()));
-    }
-
+  @GetMapping("passenger/{startDate}/{endDate}")
+  public Flux<Passenger> getPassengersWithTripsInDateRange(
+      @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
+    return passengerService
+        .findPassengersWithTripsInDateRange(startDate, endDate)
+        .doOnComplete(() -> ControllerLogs.logOnSuccess(log, GET, PATH))
+        .doOnCancel(() -> ControllerLogs.logOnCancel(log, GET, PATH))
+        .doOnError(errorEx -> ControllerLogs.logOnError(log, GET, PATH, errorEx));
+  }
 }
