@@ -18,17 +18,17 @@ public class TripController {
   private final TripService tripService;
 
   @PostMapping("/passenger/{id}")
-  public Mono<Trip> createTripForPassenger(@PathVariable String id, @RequestBody TripDTO trip) {
+  public Mono<Trip> createTripForPassenger(@PathVariable long id, @RequestBody TripDTO trip) {
     return tripService.addTripToPassenger(id, trip);
   }
 
   @GetMapping("/passenger/{id}")
-  public Flux<Trip> getTripsByPassenger(@PathVariable String id) {
+  public Flux<Trip> getTripsByPassenger(@PathVariable long id) {
     return tripService.getTripsByPassengerId(id);
   }
 
   @PutMapping("/{tripId}")
-  public Mono<ResponseEntity<String>> markTripAsCompleted(@PathVariable String tripId) {
+  public Mono<ResponseEntity<String>> markTripAsCompleted(@PathVariable long tripId) {
 
     return tripService
         .markTripAsCompleted(tripId)

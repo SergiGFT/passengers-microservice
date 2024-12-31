@@ -5,6 +5,7 @@ import com.gft.workshop.passengers.domain.exceptions.UserNotFoundException;
 import com.gft.workshop.passengers.domain.model.Passenger;
 import com.gft.workshop.passengers.domain.model.Trip;
 import com.gft.workshop.passengers.domain.repository.PassengerRepository;
+import io.hypersistence.tsid.TSID;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
@@ -27,6 +28,7 @@ public class PassengerService {
   public Mono<Passenger> createPassenger(PassengerDTO passengerDTO) {
     Passenger passenger =
         Passenger.builder()
+            .passengerId(TSID.Factory.getTsid().toLong())
             .phone(passengerDTO.getPhone())
             .address(passengerDTO.getAddress())
             .email(passengerDTO.getEmail())
@@ -41,7 +43,7 @@ public class PassengerService {
     return passengerRepository.findAll();
   }
 
-  public Mono<Passenger> findPassenger(String passengerId) {
+  public Mono<Passenger> findPassenger(long passengerId) {
     return passengerRepository
         .findById(passengerId)
         .switchIfEmpty(Mono.error(new UserNotFoundException(passengerId)));
@@ -61,7 +63,7 @@ public class PassengerService {
         .flatMap(this::findPassenger);
   }
 
-  public Mono<Void> deletePassenger(String id) {
+  public Mono<Void> deletePassenger(long id) {
     return passengerRepository.deleteById(id);
   }
 }

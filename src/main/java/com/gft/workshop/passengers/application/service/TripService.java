@@ -4,6 +4,7 @@ import com.gft.workshop.passengers.application.dto.TripDTO;
 import com.gft.workshop.passengers.domain.model.Trip;
 import com.gft.workshop.passengers.domain.repository.PassengerRepository;
 import com.gft.workshop.passengers.domain.repository.TripRepository;
+import io.hypersistence.tsid.TSID;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class TripService {
   private final TripRepository tripRepository;
   private final PassengerRepository passengerRepository;
 
-  public Mono<Trip> addTripToPassenger(String passengerId, TripDTO tripDTO) {
+  public Mono<Trip> addTripToPassenger(long passengerId, TripDTO tripDTO) {
 
     return passengerRepository
         .findById(passengerId)
@@ -24,6 +25,7 @@ public class TripService {
             passenger -> {
               Trip trip =
                   Trip.builder()
+                      .tripId(TSID.Factory.getTsid().toLong())
                       .routeId(tripDTO.getRouteId())
                       .startStop(tripDTO.getStartStop())
                       .fare(tripDTO.getFare())
@@ -36,11 +38,11 @@ public class TripService {
             });
   }
 
-  public Flux<Trip> getTripsByPassengerId(String passengerId) {
+  public Flux<Trip> getTripsByPassengerId(long passengerId) {
     return tripRepository.findAllByPassengerId(passengerId);
   }
 
-  public Mono<Long> markTripAsCompleted(String tripId) {
+  public Mono<Long> markTripAsCompleted(long tripId) {
     return tripRepository.markTripAsCompleted(tripId, LocalDateTime.now());
   }
 }

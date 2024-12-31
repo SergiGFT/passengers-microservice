@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 public class Passenger {
 
-  @Id private String passengerId;
+  @Id private long passengerId;
   @NonNull private String name;
   @NonNull private String email;
   private String phone;

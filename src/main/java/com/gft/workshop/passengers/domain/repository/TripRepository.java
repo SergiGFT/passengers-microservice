@@ -10,12 +10,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface TripRepository extends ReactiveMongoRepository<Trip, String> {
+public interface TripRepository extends ReactiveMongoRepository<Trip, Long> {
 
   @Query("{'passengerId': ?0 }")
-  Flux<Trip> findAllByPassengerId(String passengerId);
+  Flux<Trip> findAllByPassengerId(long passengerId);
 
   @Query("{ 'tripId': ?0, 'status': 'IN_PROGRESS' }")
   @Update("{ '$set': { 'status': 'COMPLETED', 'endTime': ?1 } }")
-  Mono<Long> markTripAsCompleted(String tripId, LocalDateTime endTime);
+  Mono<Long> markTripAsCompleted(long tripId, LocalDateTime endTime);
 }

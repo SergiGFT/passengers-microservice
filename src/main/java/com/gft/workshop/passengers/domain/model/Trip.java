@@ -13,14 +13,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 public class Trip {
 
-  @Id private String tripId;
-  private String routeId;
+  @Id private long tripId;
+  private long routeId;
   private LocalDateTime startTime;
   private LocalDateTime endTime;
-  private String startStop;
-  private String endStop;
+  private long startStop;
+  private long endStop;
   private double fare;
-  private String passengerId;
+  private long passengerId;
   private TripStatus status;
-
 }

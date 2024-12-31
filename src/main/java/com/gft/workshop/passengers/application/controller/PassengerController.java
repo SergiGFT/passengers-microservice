@@ -33,7 +33,7 @@ public class PassengerController {
   }
 
   @GetMapping("/{id}")
-  public Mono<Passenger> findPassengerById(@PathVariable String id) {
+  public Mono<Passenger> findPassengerById(@PathVariable long id) {
     var path = PATH + id;
     return passengerService
         .findPassenger(id)
@@ -43,7 +43,7 @@ public class PassengerController {
   }
 
   @DeleteMapping("/{id}")
-  public Mono<Void> deletePassengerById(@PathVariable String id) {
+  public Mono<Void> deletePassengerById(@PathVariable long id) {
     var path = PATH + id;
     return passengerService
         .deletePassenger(id)

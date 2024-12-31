@@ -32,13 +32,13 @@ class TripControllerTest {
 
   @BeforeEach
   void setUp() {
-    trip = Trip.builder().tripId("T1").routeId("1").build();
-    tripDTO = TripDTO.builder().routeId("1").build();
+    trip = Trip.builder().tripId(1L).routeId(1).build();
+    tripDTO = TripDTO.builder().routeId(1).build();
     var trip2 =
         Trip.builder()
-            .tripId("T2")
-            .routeId("R2")
-            .passengerId("P1")
+            .tripId(2L)
+            .routeId(2L)
+            .passengerId(1L)
             .startTime(LocalDateTime.parse("2024-11-02T00:00:00"))
             .endTime(LocalDateTime.parse("2024-11-02T00:00:00"))
             .build();
@@ -49,7 +49,7 @@ class TripControllerTest {
   @Test
   void testCreateTripForPassenger() {
 
-    String passengerId = "P1";
+    var passengerId = 1L;
 
     when(tripService.addTripToPassenger(eq(passengerId), any(TripDTO.class)))
         .thenReturn(Mono.just(trip));
@@ -62,7 +62,7 @@ class TripControllerTest {
   @Test
   void testGetTripHistoricalByPassengerId() {
 
-    String passengerId = "P1";
+    var passengerId = 1L;
 
     when(tripService.getTripsByPassengerId(passengerId)).thenReturn(Flux.fromIterable(trips));
     Flux<Trip> result = tripController.getTripsByPassenger(passengerId);
@@ -73,7 +73,7 @@ class TripControllerTest {
   @Test
   void testGetTripHistoricalByPassengerIdNotFound() {
 
-    String passengerId = "P1";
+    var passengerId = 1L;
 
     when(tripService.getTripsByPassengerId(passengerId)).thenReturn(Flux.empty());
     Flux<Trip> result = tripController.getTripsByPassenger(passengerId);

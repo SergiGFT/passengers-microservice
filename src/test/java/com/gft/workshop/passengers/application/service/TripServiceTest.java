@@ -30,41 +30,40 @@ class TripServiceTest {
   @Mock private TripRepository tripRepository;
 
   private Passenger passenger;
-  private Trip trip;
   private TripDTO tripDTO;
   private List<Trip> trips;
-  private String passengerId;
+  private long passengerId;
 
   @BeforeEach
   void setUp() {
 
-    passengerId = "P1";
+    passengerId = 1L;
+    var tripId = 1234L;
+    var trip =
+        Trip.builder().tripId(tripId).routeId(1L).startStop(1234L).passengerId(passengerId).build();
+    trips = new ArrayList<>();
+    trips.add(trip);
+    trips.add(Trip.builder().tripId(2L).routeId(2L).build());
+
+    tripDTO = TripDTO.builder().routeId(1L).startStop(1234L).passengerId(passengerId).build();
 
     passenger =
         Passenger.builder().passengerId(passengerId).name("John").email("john@example.com").build();
-
-    trip = Trip.builder().routeId("1").startStop("First stop").passengerId(passengerId).build();
-    tripDTO =
-        TripDTO.builder().routeId("1").startStop("First stop").passengerId(passengerId).build();
-
-    trips = new ArrayList<>();
-    trips.add(trip);
-    trips.add(Trip.builder().tripId("T2").routeId("R2").build());
   }
 
   @Test
   void addTripToPassenger() {
-    when(passengerRepository.findById(any(String.class))).thenReturn(Mono.just(passenger));
+    when(passengerRepository.findById(any(Long.class))).thenReturn(Mono.just(passenger));
     when(tripRepository.save(any(Trip.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
 
     Mono<Trip> result = tripService.addTripToPassenger(passengerId, tripDTO);
 
     StepVerifier.create(result)
-        .expectNextMatches(savedTrip -> savedTrip.getPassengerId().equals(passengerId))
+        .expectNextMatches(savedTrip -> savedTrip.getPassengerId() == passengerId)
         .verifyComplete();
 
     verify(passengerRepository, times(1)).findById(passengerId);
-    verify(tripRepository, times(1)).save(trip);
+    verify(tripRepository, times(1)).save(any(Trip.class));
   }
 
   @Test

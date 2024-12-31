@@ -1,6 +1,7 @@
 package com.gft.workshop.passengers.application;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import com.gft.workshop.passengers.application.controller.PassengerController;
@@ -34,8 +35,7 @@ class PassengerControllerTest {
   @BeforeEach
   void setUp() {
     passengerDTO = PassengerDTO.builder().name("John").email("john@example.com").build();
-    passenger =
-        Passenger.builder().passengerId("P1").name("John").email("john@example.com").build();
+    passenger = Passenger.builder().passengerId(1L).name("John").email("john@example.com").build();
 
     passengers = new ArrayList<>();
     passengers.add(passenger);
@@ -65,9 +65,9 @@ class PassengerControllerTest {
   @Test
   void testFindPassengerById() {
 
-    when(passengerService.findPassenger(any())).thenReturn(Mono.just(passenger));
+    when(passengerService.findPassenger(anyLong())).thenReturn(Mono.just(passenger));
 
-    Mono<Passenger> result = passengerController.findPassengerById(String.valueOf(1));
+    Mono<Passenger> result = passengerController.findPassengerById(1L);
 
     StepVerifier.create(result).expectNext(passenger).verifyComplete();
   }
@@ -85,8 +85,8 @@ class PassengerControllerTest {
   @Test
   void testGetPassengersWithTripsInDateRange() {
 
-    LocalDate startDate = LocalDate.parse("2024-01-01");
-    LocalDate endDate = LocalDate.parse("2024-12-01");
+    var startDate = LocalDate.parse("2024-01-01");
+    var endDate = LocalDate.parse("2024-12-01");
 
     when(passengerService.findPassengersWithTripsInDateRange(startDate, endDate))
         .thenReturn(Flux.just(passenger));

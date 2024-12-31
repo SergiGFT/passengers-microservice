@@ -27,13 +27,13 @@ class PassengerServiceTest {
 
   private PassengerDTO passengerDTO;
   private Passenger passenger;
-  private String passengerId;
+  private long passengerId;
 
   @BeforeEach
   void setUp() {
     passengerDTO = PassengerDTO.builder().name("John").email("john@example.com").build();
 
-    passengerId = "P1";
+    passengerId = 1L;
 
     passenger =
         Passenger.builder().passengerId(passengerId).name("John").email("john@example.com").build();

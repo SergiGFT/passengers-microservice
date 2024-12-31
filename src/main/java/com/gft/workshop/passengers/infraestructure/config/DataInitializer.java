@@ -25,17 +25,17 @@ public class DataInitializer {
       Flux<Passenger> passengers =
           Flux.just(
               Passenger.builder()
-                  .passengerId("P1")
+                  .passengerId(1L)
                   .name("John Doe")
                   .email("john.doe@example.com")
                   .build(),
               Passenger.builder()
-                  .passengerId("P2")
+                  .passengerId(2L)
                   .name("Jane Smith")
                   .email("jane.smith@example.com")
                   .build(),
               Passenger.builder()
-                  .passengerId("P3")
+                  .passengerId(3L)
                   .name("Michael Johnson")
                   .email("michael.johnson@example.com")
                   .build());
@@ -43,15 +43,15 @@ public class DataInitializer {
       Flux<Trip> trips =
           Flux.just(
               Trip.builder()
-                  .tripId("T1")
-                  .passengerId("P2")
+                  .tripId(1L)
+                  .passengerId(2L)
                   .startTime(LocalDateTime.parse("2024-11-02T00:00:00"))
                   .endTime(LocalDateTime.parse("2024-11-02T00:00:00"))
                   .status(TripStatus.IN_PROGRESS)
                   .build(),
               Trip.builder()
-                  .tripId("T2")
-                  .passengerId("P3")
+                  .tripId(2L)
+                  .passengerId(3L)
                   .startTime(LocalDateTime.parse("2024-12-02T00:00:00"))
                   .endTime(LocalDateTime.parse("2024-12-02T00:00:00"))
                   .status(TripStatus.IN_PROGRESS)
